@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/home/static/css/main.0e3767d6.css",
+    "main.js": "/home/static/js/main.73c5cce4.js",
+    "static/js/787.4b24f717.chunk.js": "/home/static/js/787.4b24f717.chunk.js",
+    "static/media/argenis.jpeg": "/home/static/media/argenis.da0672e156e001604385.jpeg",
+    "static/media/ks-university.png": "/home/static/media/ks-university.6522a9b17f269b251d93.png",
+    "static/media/glasshive.webp": "/home/static/media/glasshive.45b8e912ffe8c77d3c0e.webp",
+    "static/media/slick.svg": "/home/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/home/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/home/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/home/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/home/index.html",
+    "main.0e3767d6.css.map": "/home/static/css/main.0e3767d6.css.map",
+    "main.73c5cce4.js.map": "/home/static/js/main.73c5cce4.js.map",
+    "787.4b24f717.chunk.js.map": "/home/static/js/787.4b24f717.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0e3767d6.css",
+    "static/js/main.73c5cce4.js"
+  ]
+}
