@@ -1,5 +1,4 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom"; // Asegúrate de importar BrowserRouter
 import {
   mainBody,
   about,
@@ -14,8 +13,11 @@ import AboutMe from "./components/home/AboutMe";
 import Project from "./components/home/Project";
 import Footer from "./components/Footer";
 import Skills from "./components/home/Skills";
+// import { Blog } from "./components/blog/Blog";
+// import BlogPost from "./components/blog/BlogPost";
 import GetInTouch from "./components/home/GetInTouch.jsx";
 import Leadership from "./components/home/Leadership.jsx";
+
 import Experience from "./components/home/Experience";
 
 const Home = React.forwardRef((props, ref) => {
@@ -68,22 +70,18 @@ const Home = React.forwardRef((props, ref) => {
 
 const App = () => {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
-      {" "}
-      {/* Asegúrate de añadir esto */}
-      <div>
-        <Home></Home>
-        <Footer>
-          {getInTouch.show && (
-            <GetInTouch
-              heading={getInTouch.heading}
-              message={getInTouch.message}
-              email={getInTouch.email}
-            />
-          )}
-        </Footer>
-      </div>
-    </Router>
+    <div>
+      <Home></Home>
+      <Footer>
+        {getInTouch.show && (
+          <GetInTouch
+            heading={getInTouch.heading}
+            message={getInTouch.message}
+            email={getInTouch.email}
+          />
+        )}
+      </Footer>
+    </div>
   );
 };
 
