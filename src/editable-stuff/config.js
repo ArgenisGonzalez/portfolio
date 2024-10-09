@@ -44,7 +44,7 @@ const about = {
   message:
     "My name is Argenis González. 👨‍💻 I´m a JavaScript Developer specializing in backend development, I am a Computer Systems Engineer with strong expertise in database design (SQL/NoSQL) and API development. 🌐 I thrive in multidisciplinary teams, implementing innovative solutions that boost performance and enhance user experience. 🚀 My commitment to technical excellence is evident through successful projects and continuous professional growth. 📈",
   resume:
-    "https://drive.google.com/file/d/1nEyGvt1Ty8hTLMuWEbnOzxKTAqHz9FrD/view?usp=sharing",
+    "https://drive.google.com/file/d/1jkRWqUKjZxfllLPy4J84X9NWZl1AWnCB/view?usp=sharing",
 };
 
 // PROJECTS SECTION
