@@ -80,11 +80,11 @@ h2{font-family:var(--font-display);font-size:clamp(26px,4vw,36px);font-weight:70
 /* ---------- Terminal (signature) ---------- */
 .terminal{background:var(--terminal);border-radius:var(--radius);box-shadow:0 24px 60px -18px rgba(14,42,42,.45);overflow:hidden;font-family:var(--font-mono);font-size:13.5px;line-height:1.75}
 .terminal-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--terminal-line);flex-wrap:nowrap}
-.terminal-bar span{width:11px;height:11px;border-radius:50%;flex:none}
-.terminal-bar span:nth-child(1){background:#E8604C}
-.terminal-bar span:nth-child(2){background:var(--mango)}
-.terminal-bar span:nth-child(3){background:var(--code-green)}
-.terminal-bar .path{margin-left:10px;color:#4E6B68;font-size:12px;flex:1;min-width:0;width:auto;height:auto;border-radius:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.terminal-bar .dot-btn{width:11px;height:11px;border-radius:50%;flex:none}
+.terminal-bar .dot-btn:nth-child(1){background:#E8604C}
+.terminal-bar .dot-btn:nth-child(2){background:var(--mango)}
+.terminal-bar .dot-btn:nth-child(3){background:var(--code-green)}
+.terminal-bar .path{margin-left:10px;color:#4E6B68;font-size:12px;flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .terminal-body{padding:20px 22px;color:#C9DBD8;min-height:320px;overflow-wrap:anywhere}
 .t-cmd{color:var(--code-green)}
 .t-key{color:var(--code-cyan)}
@@ -236,7 +236,7 @@ footer{padding:28px 0 40px;text-align:center;font-family:var(--font-mono);font-s
     </div>
 
     <div class="terminal" aria-hidden="true">
-      <div class="terminal-bar"><span></span><span></span><span></span><span class="path">~/argenis — zsh</span></div>
+      <div class="terminal-bar"><span class="dot-btn"></span><span class="dot-btn"></span><span class="dot-btn"></span><span class="path">~/argenis — zsh</span></div>
       <div class="terminal-body" id="terminalBody"></div>
     </div>
   </section>
