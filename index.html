@@ -157,6 +157,11 @@ h2{font-family:var(--font-display);font-size:clamp(26px,4vw,36px);font-weight:70
 /* ---------- Footer ---------- */
 footer{padding:28px 0 40px;text-align:center;font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
 
+/* ---------- Pixel background ---------- */
+#pixelCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nav,main,footer{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){#pixelCanvas{display:none}}
+
 /* ---------- Reveal ---------- */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
@@ -181,6 +186,8 @@ footer{padding:28px 0 40px;text-align:center;font-family:var(--font-mono);font-s
 </style>
 </head>
 <body>
+
+<canvas id="pixelCanvas" aria-hidden="true"></canvas>
 
 <nav class="nav" aria-label="Main navigation">
   <div class="nav-inner">
@@ -634,6 +641,58 @@ function fallbackCopy(done){
   try { document.execCommand('copy'); done(); } catch(e){}
   document.body.removeChild(ta);
 }
+
+/* ---------- Pixel background: floating data pixels ---------- */
+(function(){
+  if (reduced) return;
+  const canvas = document.getElementById('pixelCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, pixels = [];
+  const COLORS = ['rgba(15,123,108,OP)','rgba(15,123,108,OP)','rgba(15,123,108,OP)','rgba(242,163,60,OP)'];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    const count = Math.min(46, Math.floor(W * H / 34000));
+    pixels = Array.from({length: count}, () => newPixel(true));
+  }
+  function newPixel(anywhere){
+    const size = 3 + Math.floor(Math.random() * 3) * 2;      // 3, 5 or 7px — pixel-art feel
+    const special = Math.random() < 0.08;                     // rare mango blinker
+    return {
+      x: Math.random() * W,
+      y: anywhere ? Math.random() * H : H + size,
+      size,
+      speed: 0.12 + Math.random() * 0.28,
+      drift: (Math.random() - 0.5) * 0.15,
+      color: special ? 'rgba(242,163,60,OP)' : COLORS[Math.floor(Math.random() * COLORS.length)],
+      baseOp: special ? 0.35 : 0.06 + Math.random() * 0.10,
+      special,
+      t: Math.random() * Math.PI * 2
+    };
+  }
+  function tick(){
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pixels){
+      p.y -= p.speed;
+      p.x += p.drift;
+      p.t += 0.05;
+      if (p.y < -p.size || p.x < -p.size || p.x > W + p.size){
+        Object.assign(p, newPixel(false));
+      }
+      const op = p.special
+        ? p.baseOp * (0.4 + 0.6 * Math.abs(Math.sin(p.t)))     // blink
+        : p.baseOp;
+      ctx.fillStyle = p.color.replace('OP', op.toFixed(3));
+      // crisp pixel squares
+      ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+    }
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  tick();
+})();
 
 /* ---------- Init ---------- */
 applyLang();
