@@ -642,50 +642,131 @@ function fallbackCopy(done){
   document.body.removeChild(ta);
 }
 
-/* ---------- Pixel background: floating data pixels ---------- */
+/* ---------- Pixel background: retro game sprites ---------- */
 (function(){
   if (reduced) return;
   const canvas = document.getElementById('pixelCanvas');
   const ctx = canvas.getContext('2d');
-  let W, H, pixels = [];
-  const COLORS = ['rgba(15,123,108,OP)','rgba(15,123,108,OP)','rgba(15,123,108,OP)','rgba(242,163,60,OP)'];
+  let W, H, items = [];
+
+  /* Original 8-bit sprites. Keys map to palette colors. */
+  const PALETTES = {
+    gem:    {1:'#0A5A4F', 2:'#0F7B6C', 3:'#7BD8B0'},
+    coin:   {1:'#9A6414', 2:'#F2A33C', 3:'#F5C97B'},
+    heart:  {1:'#B23A2C', 2:'#E8604C', 3:'#F0968A'},
+    star:   {1:'#C98A1E', 2:'#F5C97B', 3:'#FFF3D6'},
+    potion: {1:'#1C6E80', 2:'#8AD4E8', 3:'#D6F2FA'}
+  };
+  const SPRITES = {
+    gem: [
+      '..122..',
+      '.12332.',
+      '1233332',
+      '.12331.',
+      '..121..',
+      '...1...'
+    ],
+    coin: [
+      '.1111.',
+      '122321',
+      '123321',
+      '123321',
+      '122221',
+      '.1111.'
+    ],
+    heart: [
+      '.11.11.',
+      '1231321',
+      '1222221',
+      '.12221.',
+      '..121..',
+      '...1...'
+    ],
+    star: [
+      '..1..',
+      '.131.',
+      '13231',
+      '.121.',
+      '1.1.1'
+    ],
+    potion: [
+      '..11..',
+      '..11..',
+      '.1331.',
+      '132231',
+      '122221',
+      '.1111.'
+    ]
+  };
+  const TYPES = ['gem','gem','coin','coin','heart','star','star','potion']; // weighted mix
 
   function resize(){
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    const count = Math.min(46, Math.floor(W * H / 34000));
-    pixels = Array.from({length: count}, () => newPixel(true));
+    const spriteCount = Math.min(16, Math.max(7, Math.floor(W * H / 90000)));
+    const dustCount   = Math.min(24, Math.floor(W * H / 60000));
+    items = [];
+    for (let i = 0; i < spriteCount; i++) items.push(newItem('sprite', true));
+    for (let i = 0; i < dustCount; i++)   items.push(newItem('dust', true));
   }
-  function newPixel(anywhere){
-    const size = 3 + Math.floor(Math.random() * 3) * 2;      // 3, 5 or 7px — pixel-art feel
-    const special = Math.random() < 0.08;                     // rare mango blinker
+  function newItem(kind, anywhere){
+    if (kind === 'dust'){
+      const size = 3 + Math.floor(Math.random() * 2) * 2;
+      return {
+        kind, size,
+        x: Math.random() * W,
+        y: anywhere ? Math.random() * H : H + size,
+        speed: 0.10 + Math.random() * 0.22,
+        sway: 0, swayAmp: 0,
+        op: 0.05 + Math.random() * 0.08,
+        color: Math.random() < 0.25 ? '242,163,60' : '15,123,108',
+        t: Math.random() * Math.PI * 2
+      };
+    }
+    const type = TYPES[Math.floor(Math.random() * TYPES.length)];
+    const scale = 2 + Math.floor(Math.random() * 2);          // 2x or 3x pixels
+    const h = SPRITES[type].length * scale;
     return {
-      x: Math.random() * W,
-      y: anywhere ? Math.random() * H : H + size,
-      size,
-      speed: 0.12 + Math.random() * 0.28,
-      drift: (Math.random() - 0.5) * 0.15,
-      color: special ? 'rgba(242,163,60,OP)' : COLORS[Math.floor(Math.random() * COLORS.length)],
-      baseOp: special ? 0.35 : 0.06 + Math.random() * 0.10,
-      special,
+      kind, type, scale,
+      x: 20 + Math.random() * (W - 40),
+      y: anywhere ? Math.random() * H : H + h,
+      speed: 0.15 + Math.random() * 0.25,
+      swayAmp: 6 + Math.random() * 10,                        // gentle float like on water
+      op: 0.20 + Math.random() * 0.18,
       t: Math.random() * Math.PI * 2
     };
   }
+  function drawSprite(it){
+    const rows = SPRITES[it.type], pal = PALETTES[it.type], s = it.scale;
+    const sway = Math.sin(it.t) * it.swayAmp;
+    const pulse = 0.85 + 0.15 * Math.sin(it.t * 1.7);
+    ctx.globalAlpha = it.op * pulse;
+    const x0 = Math.round(it.x + sway), y0 = Math.round(it.y);
+    for (let r = 0; r < rows.length; r++){
+      for (let c = 0; c < rows[r].length; c++){
+        const k = rows[r][c];
+        if (k === '.') continue;
+        ctx.fillStyle = pal[k];
+        ctx.fillRect(x0 + c * s, y0 + r * s, s, s);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
   function tick(){
     ctx.clearRect(0, 0, W, H);
-    for (const p of pixels){
-      p.y -= p.speed;
-      p.x += p.drift;
-      p.t += 0.05;
-      if (p.y < -p.size || p.x < -p.size || p.x > W + p.size){
-        Object.assign(p, newPixel(false));
+    for (const it of items){
+      it.y -= it.speed;
+      it.t += 0.02;
+      const height = it.kind === 'dust' ? it.size : SPRITES[it.type].length * it.scale;
+      if (it.y < -height - 12){
+        Object.assign(it, newItem(it.kind, false));
       }
-      const op = p.special
-        ? p.baseOp * (0.4 + 0.6 * Math.abs(Math.sin(p.t)))     // blink
-        : p.baseOp;
-      ctx.fillStyle = p.color.replace('OP', op.toFixed(3));
-      // crisp pixel squares
-      ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+      if (it.kind === 'dust'){
+        ctx.fillStyle = `rgba(${it.color},${it.op.toFixed(3)})`;
+        ctx.fillRect(Math.round(it.x), Math.round(it.y), it.size, it.size);
+      } else {
+        drawSprite(it);
+      }
     }
     requestAnimationFrame(tick);
   }
