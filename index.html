@@ -252,6 +252,9 @@ footer{padding:30px 0 44px;text-align:center;font-family:'JetBrains Mono',monosp
   .bento{grid-template-columns:1fr}
   .cell-terminal,.cell-wide{grid-column:span 1}
 }
+@media (pointer:coarse){
+  .terminal-input-row input{font-size:16px}
+}
 @media (max-width:700px){
   .wrap{padding:0 20px}
   .hero{padding:110px 0 90px}
@@ -836,7 +839,7 @@ function runCommand(raw){
   tPrint('<span class="t-err">' + (LANG==='es' ? 'comando no encontrado: ' : 'command not found: ') + lower.replace(/</g,'&lt;') + '</span> <span class="t-dim">— ' + (LANG==='es' ? "prueba 'help'" : "try 'help'") + '</span>');
 }
 tInput.addEventListener('keydown', e => { if (e.key === 'Enter'){ runCommand(tInput.value); tInput.value = ''; } });
-document.querySelector('.cell-terminal').addEventListener('click', () => tInput.focus());
+if (finePointer) document.querySelector('.cell-terminal').addEventListener('click', () => tInput.focus());
 function boot(){
   const es = LANG === 'es';
   const lines = [
